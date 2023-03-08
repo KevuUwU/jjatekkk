@@ -186,4 +186,42 @@ while not Nyert:
                     harc(csatamod, advDict['kaland'][Jatekos.lokacio]['ellenfel3']['nev'],
                          advDict['kaland'][Jatekos.lokacio]['ellenfel3']['HP'],
                          advDict['kaland'][Jatekos.lokacio]['ellenfel3']['ugyesseg'])
+ if Jatekos.halott:
+        break
+
+    # győzelem vagy gameover detektálás
+    if advDict['kaland'][Jatekos.lokacio]['akcio'] == "gyozelem":
+        Nyert = True
+        break
+    elif advDict['kaland'][Jatekos.lokacio]['akcio'] == "gameover":
+        Nyert = False
+        Jatekos.gameover()
+        break
+
+    # lépések
+    if "rollllll" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        while True:
+            if kockadobas()>4:
+                LepettEMar = True
+                break
+            else:
+                Jatekos.jatekosSebzes(2)
+    if "kisebbnagyonbb" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        if duplakockadobas() > Jatekos.Skill:
+            Jatekos.lokaciovaltoztatas(advDict['kaland'][Jatekos.lokacio]['ugras'][0])
+            LepettEMar = True
+        else:
+            Jatekos.lokaciovaltoztatas(advDict['kaland'][Jatekos.lokacio]['ugras'][1])
+            LepettEMar = True
+    if "szerencseproba" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        if szerencseproba():
+            Jatekos.lokaciovaltoztatas(advDict['kaland'][Jatekos.lokacio]['HaVan'])
+            LepettEMar = True
+    if not probaltemar:
+        if "gyuruproba" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+            print("Szeretnéd felprobálni a gyűrűt?")
+            if igenvagynem():
+                Jatekos.lokaciovaltoztatas(advDict['kaland'][Jatekos.lokacio]['haszeretne'])
+                LepettEMar = True
+                probaltemar = True
 
