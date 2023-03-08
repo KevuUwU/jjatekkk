@@ -98,4 +98,92 @@ def harc(csatamod, name, hp, skill):
         print(f"{name} Életereje: {hp}")
         print(f"Játékos Életereje: {Jatekos.HP} \n")
 
+Nyert = False
+probaltemar = False
+fellvettekopenyt = False
+csatamod = 0
+input("Új játék inditásához írj be bármit és nyomd meg az entert: ")
+
+Jatekos = Jatekos(duplakockadobas() + 12, kockadobas() + 6, kockadobas() + 6, 20)  # HP Luck Skill Gold
+
+with open("Kaland.json", "r", encoding="utf-8") as jsn:
+    advDict = json.load(jsn)
+
+while not Nyert:
+    LepettEMar = False
+    Jatekos.lokaciostr()
+    print(advDict['kaland'][Jatekos.lokacio]['szoveg'] + "\n")
+
+    # stat váltosztatások
+    if "eleterovesztes" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.jatekosSebzes(advDict['kaland'][Jatekos.lokacio]['ertek'])
+    if "hplossrng" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.jatekosSebzes(kockadobas())
+    if "szerencsevesztes" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.minuszluck(advDict['kaland'][Jatekos.lokacio]['ertek'])
+    if "Eleteronyeres" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.jatekosHeal(advDict['kaland'][Jatekos.lokacio]['ertek'])
+    if "szerencsenyeres" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.pluszluck(advDict['kaland'][Jatekos.lokacio]['ertek'])
+    if "luckblessing" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.JatekosBlessing()
+    if "combatblessing" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.JatekosCombatBlessing()
+    if "kezdetiszerencsenoveles" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.kezdetiszerencsenoveles(advDict['kaland'][Jatekos.lokacio]['ertek'])
+    if "szerencse+hpminusz" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.minuszluck(advDict['kaland'][Jatekos.lokacio]['ertek'][0])
+        Jatekos.jatekosSebzes(advDict['kaland'][Jatekos.lokacio]['ertek'][1])
+    if "elixir" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.SzerencseElixirf()
+    if "tortenetkezdes" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.tortenetkezdes()
+
+    # tárgy felvételek
+    if "pluszlebeges" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.pluszitem("Lebegés Köpenye")
+    if "pluszgyuru" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.pluszitem("Ügyesség Gyürüje")
+    if "pluszarany" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.pluszitem("Aranykulcs")
+
+    if "+penz" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.pluszpenz(int(advDict['kaland'][Jatekos.lokacio]['mennyiseg'][0]))
+
+    if "+kristaly" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        Jatekos.pluszcrystal(advDict['kaland'][Jatekos.lokacio]['targy'])
+    # harc
+    if "csatamod" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        csatamod = int(advDict['kaland'][Jatekos.lokacio]['ertek'][0])
+
+    if "onharc" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        if advDict['kaland'][Jatekos.lokacio]['ellenfelek'] == 1:
+            harc(csatamod, "te", Jatekos.HP, Jatekos.Skill)
+            csatamod = 0
+
+    if "harc" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        if advDict['kaland'][Jatekos.lokacio]['ellenfelek'] == 1:
+            harc(csatamod, advDict['kaland'][Jatekos.lokacio]['ellenfel']['nev'],
+                 advDict['kaland'][Jatekos.lokacio]['ellenfel']['HP'],
+                 advDict['kaland'][Jatekos.lokacio]['ellenfel']['ugyesseg'])
+            csatamod = 0
+        elif advDict['kaland'][Jatekos.lokacio]['ellenfelek'] == 2:
+            if harc(csatamod, advDict['kaland'][Jatekos.lokacio]['ellenfel']['nev'],
+                    advDict['kaland'][Jatekos.lokacio]['ellenfel']['HP'],
+                    advDict['kaland'][Jatekos.lokacio]['ellenfel']['ugyesseg']):
+                csatamod = 0
+                harc(csatamod, advDict['kaland'][Jatekos.lokacio]['ellenfel2']['nev'],
+                     advDict['kaland'][Jatekos.lokacio]['ellenfel2']['HP'],
+                     advDict['kaland'][Jatekos.lokacio]['ellenfel2']['ugyesseg'])
+        elif advDict['kaland'][Jatekos.lokacio]['ellenfelek'] == 3:
+            if harc(csatamod, advDict['kaland'][Jatekos.lokacio]['ellenfel']['nev'],
+                    advDict['kaland'][Jatekos.lokacio]['ellenfel']['HP'],
+                    advDict['kaland'][Jatekos.lokacio]['ellenfel']['ugyesseg']):
+                csatamod = 0
+                if harc(csatamod, advDict['kaland'][Jatekos.lokacio]['ellenfel2']['nev'],
+                        advDict['kaland'][Jatekos.lokacio]['ellenfel2']['HP'],
+                        advDict['kaland'][Jatekos.lokacio]['ellenfel2']['ugyesseg']):
+                    harc(csatamod, advDict['kaland'][Jatekos.lokacio]['ellenfel3']['nev'],
+                         advDict['kaland'][Jatekos.lokacio]['ellenfel3']['HP'],
+                         advDict['kaland'][Jatekos.lokacio]['ellenfel3']['ugyesseg'])
 
