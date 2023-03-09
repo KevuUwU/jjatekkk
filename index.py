@@ -224,4 +224,46 @@ while not Nyert:
                 Jatekos.lokaciovaltoztatas(advDict['kaland'][Jatekos.lokacio]['haszeretne'])
                 LepettEMar = True
                 probaltemar = True
+    if not fellvettekopenyt:
+        if "kopeny" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+            print("Szeretnéd felprobálni a köpenyt?")
+            if igenvagynem():
+                Jatekos.lokaciovaltoztatas(advDict['kaland'][Jatekos.lokacio]['haszeretnekopenyt'])
+                LepettEMar = True
+                fellvettekopenyt = True
+    if "targy" in advDict['kaland'][Jatekos.lokacio]['akcio']:
+        if (advDict['kaland'][Jatekos.lokacio]['TargyInfo']['szukseges']) in Jatekos.Items:
+            Jatekos.lokaciovaltoztatas(advDict['kaland'][Jatekos.lokacio]['TargyInfo']['HaVan'])
+            LepettEMar = True
+    if not LepettEMar:
+        if len(advDict['kaland'][Jatekos.lokacio]['ugras']) == 1:
+            StartInp = input("Folytatáshoz nyomjon entert vagy írjon be egy commandot [statok, kilepes]: ")
+            if StartInp == "statok":
+                print(Jatekos)
+                print("")
+            elif StartInp == "kilepes":
+                exit()
+            Jatekos.lokaciovaltoztatas(advDict['kaland'][Jatekos.lokacio]['ugras'][0])
+        elif len(advDict['kaland'][Jatekos.lokacio]['ugras']) > 1:
+            print("Irja be merre szeretne haladni vagy irjon be egy commandot [statok, kilepes]?")
+            while True:
+                inp = input()
+                if not inp == "":
+                    if inp in str(advDict['kaland'][Jatekos.lokacio]['ugras']):
+                        Jatekos.lokaciovaltoztatas(inp)
+                        break
+                    elif inp == "statok":
+                        print(Jatekos)
+                        print("")
+                    elif inp == "kilepes":
+                        exit()
+                    else:
+                        print("Ilyen opció nincsen")
+                else:
+                    print("Ilyen opció nincsen")
+
+if not Nyert:
+    print("Vesztettél!")
+elif Nyert:
+    print("Gratulálunk megnyerted a játékot nyertél!")
 
